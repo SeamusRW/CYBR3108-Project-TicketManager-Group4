@@ -5,7 +5,7 @@ salt = os.urandom(32)
 
 users = {}
 
-def createKey(password):
+def returnKey(password):
 	hashed = hashlib.pbkdf2_hmac(
 		'sha256',
 		password.encode('utf-8'),
