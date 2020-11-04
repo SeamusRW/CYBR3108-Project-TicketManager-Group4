@@ -1,14 +1,14 @@
 try:
-    from hashpass import *
+    from backend import *
 except:
     print("Cannot Import Modules...")
     exit(1)
 
-loggedIN = True
+loggedIN = False
 
 
-def signup(username, password):
-    addUser(username, password)
+def signup(username, password, fname, lname):
+    addUser(username, password, fname, lname)
 
 
 def login(username, password):
@@ -40,3 +40,21 @@ def checkUser(username):
         return True
     else:
         return False
+
+
+def addpoints(username, points):
+    try:
+        update_points(username, points)
+    except:
+        print("Error Adding points")
+    else:
+        print("Points added succesfully")
+
+
+def getpointamnt(username):
+    try:
+        points = select_points(username)
+    except:
+        print("Unable to retrieve point amount")
+    else:
+        return points
