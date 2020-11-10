@@ -14,6 +14,7 @@ conn = sql.connect(file)
 c = conn.cursor()
 
 
+# Hashes Password
 def getKey(password):
     salt = os.urandom(32)
     hashed = hashlib.pbkdf2_hmac(
@@ -28,14 +29,16 @@ def getKey(password):
     return hashed
 
 
+# adds user, calls insert into
 def addUser(username, password, fname, lname):
     # if username not in users and password not in users:
     if validatePass(password):
-        insert_into(username, getKey(password), fname, lname, points=500)
+        insert_into(username, getKey(password), fname, lname, points=500, t1="None", t2="None", t3="None")
     else:
         print("Bad Password, please try again")
 
 
+# checks to see if user and password match
 def validateUser(user, password):
     if select_user(user):
         if select_pass(user, password):
@@ -67,14 +70,20 @@ def validatePass(password):
         return False
 
 
-def insert_into(user, password, fname, lname, points):
+def valUser(user):
+    if select_user(user):
+        return True
+    else:
+        return False
+
+
+# here begins the frankenstein of 2 am sql code
+def insert_into(user, password, fname, lname, points, t1, t2, t3):
     try:
         points = str(points)
         c.execute(
-            ''' INSERT INTO User (Username,Password,Fname,LName,Points)
-                        Values ({0},{1},{2},{3},{4});'''.format("'" + user + "'", "'" + password + "'",
-                                                                "'" + fname + "'", "'" + lname + "'",
-                                                                "'" + points + "'"))
+            ''' INSERT INTO USERS (Username,Password,Fname,LName,Points,TICKETA,TICKETB,TICKETC)
+                        Values (?,?,?,?,?,?,?,?);''', (user, password, fname, lname, points, t1, t2, t3))
     except sql.Error as e:
         print(e)
     except TypeError as e:
@@ -88,7 +97,7 @@ def insert_into(user, password, fname, lname, points):
 def select_user(user):
     try:
         c.execute(
-            ''' SELECT Username FROM User WHERE Username = {}
+            ''' SELECT Username FROM USERS WHERE Username = {}
         '''.format("'" + user + "'"))
         value = c.fetchone()
         data = "{}".format(value).translate({ord(i): None for i in "(')[],"})
@@ -108,7 +117,7 @@ def select_user(user):
 
 def select_pass(user, password):
     try:
-        c.execute(''' SELECT Password FROM User WHERE Username = {}
+        c.execute(''' SELECT Password FROM USERS WHERE Username = {}
         '''.format("'" + user + "'"))
         value = c.fetchone()
         data = "{}".format(value).translate({ord(i): None for i in "(')[],"})
@@ -125,9 +134,82 @@ def select_pass(user, password):
         conn.commit()
 
 
+# here begins the horrifying amalgamation of last minute sql ideas
+def check_t1(user):
+    try:
+        c.execute(''' SELECT TICKETA FROM USERS WHERE Username = {}
+           '''.format("'" + user + "'"))
+        value = c.fetchone()
+        data = "{}".format(value).translate({ord(i): None for i in "(')[],"})
+    except sql.Error as e:
+        print(e)
+    else:
+        return data
+    finally:
+        conn.commit()
+
+
+def check_t2(user):
+    try:
+        c.execute(''' SELECT TICKETB FROM USERS WHERE Username = {}
+           '''.format("'" + user + "'"))
+        value = c.fetchone()
+        data = "{}".format(value).translate({ord(i): None for i in "(')[],"})
+    except sql.Error as e:
+        print(e)
+    else:
+        return data
+    finally:
+        conn.commit()
+
+
+def check_t3(user):
+    try:
+        c.execute(''' SELECT TICKETC FROM USERS WHERE Username = {}
+           '''.format("'" + user + "'"))
+        value = c.fetchone()
+        data = "{}".format(value).translate({ord(i): None for i in "(')[],"})
+    except sql.Error as e:
+        print(e)
+    else:
+        return data
+    finally:
+        conn.commit()
+
+
+def update_t1(user):
+    try:
+        c.execute(''' UPDATE USERS SET TICKETA = '1' WHERE Username = ?
+           ''', [user])
+    except sql.Error as e:
+        print(e)
+    finally:
+        conn.commit()
+
+
+def update_t2(user):
+    try:
+        c.execute(''' UPDATE USERS SET TICKETB = '1' WHERE Username = ?
+           ''', [user])
+    except sql.Error as e:
+        print(e)
+    finally:
+        conn.commit()
+
+
+def update_t3(user):
+    try:
+        c.execute(''' UPDATE USERS SET TICKETC = '1' WHERE Username = ?
+           ''', [user])
+    except sql.Error as e:
+        print(e)
+    finally:
+        conn.commit()
+
+
 def update_points(user, points):
     try:
-        c.execute('''UPDATE User SET Points = {0} WHERE Username = {1}
+        c.execute('''UPDATE USERS SET Points = {0} WHERE Username = {1}
             '''.format("'" + points + "'", "'" + user + "'"))
     except sql.Error as e:
         print(e)
@@ -139,7 +221,7 @@ def update_points(user, points):
 
 def select_points(user):
     try:
-        c.execute('''SELECT Points FROM User WHERE Username = {} '''.format("'" + user + "'"))
+        c.execute('''SELECT Points FROM USERS WHERE Username = {} '''.format("'" + user + "'"))
         value = c.fetchone()
         data = "{}".format(value).translate({ord(i): None for i in "(')[],"})
         points = int(data)
@@ -151,10 +233,3 @@ def select_points(user):
         return points
     finally:
         conn.commit()
-
-
-def valUser(user):
-    if select_user(user):
-        return True
-    else:
-        return False

@@ -1,4 +1,4 @@
-import credentials as creds
+import gloves as glove
 import time as t
 import socket
 
@@ -19,6 +19,7 @@ def main():
     print("\n____________________")
     while ui != "quit" or ui != "3":
         print("\n1: Login\n2: Signup\n3: Quit")
+        print("____________________\n")
         t.sleep(0.2)
 
         ui = input(": ")
@@ -33,15 +34,14 @@ def main():
             except TypeError:
                 print("Invalid Credentials")
             else:
-                if creds.login(username, password):
+                if glove.login(username, password):
                     application(username, password)
                 else:
                     print("Unable to login, Please check login information")
 
         if ui == "2" or ui == "signup":
             print("\n<<Signup>>")
-            print("1"
-                  "____________________")
+            print("____________________")
             t.sleep(0.2)
             while True:
                 print("\n<<Password Requirements:")
@@ -54,7 +54,7 @@ def main():
                 except TypeError:
                     print("Invalid type")
                 else:
-                    if creds.checkUser(username):
+                    if glove.checkUser(username):
                         print("Username Taken, please try again")
                     else:
                         try:
@@ -62,17 +62,13 @@ def main():
                         except TypeError:
                             print("Invalid Type")
                         else:
-                            if creds.valPass(password):
+                            if glove.valPass(password):
                                 verify = input("Please verify Password: ")
                                 if verify == password:
                                     fname = input("Please enter first name: ")
                                     lname = input("Please enter last name: ")
 
-                                    creds.signup(username, password, fname, lname)
-                                    # except:
-                                    #   print("Error Signing up")
-                                    # else:
-                                    #  print("Sign up succesfully")
+                                    glove.signup(username, password, fname, lname)
                                     break
                                 else:
                                     print("\nPasswords do not match, please try again")
@@ -80,16 +76,18 @@ def main():
                                 print("Password does not meet requirements please try again")
 
         if ui == "3" or ui == "quit":
-            break
+            print("Goodbye")
+            exit(1)
 
 
 def application(username, password):
     ui = ""
-    tickets = [["Metallica", 20], ["Lady Gaga", 20], ["Lecrae", 20]]
-    owned = []
-    if creds.loggedIN:
-        points = creds.getpointamnt(username)
-        print("Welcome " + username + "!")
+    tickets = [["Metallica", 20], ["Lady Gaga", 20], ["Keith Urban", 20]]
+    if glove.loggedIN:
+        points = glove.getpointamnt(username)
+        print('''
+        | Welcome to Ticket Manager ''' + username + ''' |
+        ''')
 
         while ui != "4" or "signout":
             print("1: Buy Tickets \n2: View Owned Tickets \n3: Add Points \n4: Signout")
@@ -102,7 +100,7 @@ def application(username, password):
                     print("Points: ", points)
                     print("Available tickets: \n")
                     for ticket in tickets:
-                        print(ticket)
+                        print("{}".format(ticket).translate({ord(i): None for i in "(')[]"}))
                     print("\nPlease press 1,2 or 3 to select ticket. Or press b to go back")
                     ui = input(": ")
 
@@ -111,9 +109,16 @@ def application(username, password):
                         ui = input(": ")
                         if ui == "y":
                             print("purchasing: ", tickets.__getitem__(0))
-                            owned.append(tickets.__getitem__(0))
-                            creds.update_points(username,points - 20)
-                            points = creds.getpointamnt(username)
+                            if glove.get_tickets(username, 1) == "None":
+                                glove.update_tickets(username, 1)
+
+                                current = glove.getpointamnt(username)
+                                current = int(current)
+                                new = current - 20
+                                glove.update_points(username, str(new))
+                                points = glove.getpointamnt(username)
+
+                                print("Metallica Ticket Purchased")
                         else:
                             print("purchase cancelled")
 
@@ -122,9 +127,16 @@ def application(username, password):
                         ui = input(": ")
                         if ui == "y":
                             print("purchasing: ", tickets.__getitem__(1))
-                            owned.append(tickets.__getitem__(1))
-                            creds.update_points(username, points - 20)
-                            points = creds.getpointamnt(username)
+                            if glove.get_tickets(username, 2) == "None":
+                                glove.update_tickets(username, 2)
+
+                                current = glove.getpointamnt(username)
+                                current = int(current)
+                                new = current - 20
+                                glove.update_points(username, str(new))
+                                points = glove.getpointamnt(username)
+
+                                print("Lady Gaga Ticket Purchased")
                         else:
                             print("purchase cancelled")
 
@@ -133,9 +145,16 @@ def application(username, password):
                         ui = input(": ")
                         if ui == "y":
                             print("purchasing: ", tickets.__getitem__(2))
-                            owned.append(tickets.__getitem__(2))
-                            creds.update_points(username, points - 20)
-                            points = creds.getpointamnt(username)
+                            if glove.get_tickets(username, 3) == "None":
+                                glove.update_tickets(username, 3)
+
+                                current = glove.getpointamnt(username)
+                                current = int(current)
+                                new = current - 20
+                                glove.update_points(username, str(new))
+                                points = glove.getpointamnt(username)
+
+                                print("Keith Urban Ticket Purchased")
                         else:
                             print("purchase cancelled")
 
@@ -147,8 +166,12 @@ def application(username, password):
 
             if ui == "2":
                 print("\n<<Owned Tickets>>")
-                for ticket in owned:
-                    print(ticket)
+                if glove.get_tickets(username, 1) == "1":
+                    print("Metallica")
+                if glove.get_tickets(username, 2) == "1":
+                    print("Lady Gaga")
+                if glove.get_tickets(username, 3) == "1":
+                    print("Keith Urban")
 
                 t.sleep(5)
 
@@ -158,14 +181,14 @@ def application(username, password):
                 ui = input()
                 if ui <= "5000":
                     try:
-                        current = creds.getpointamnt(username)
+                        current = glove.getpointamnt(username)
                         new = int(current) + int(ui)
                         new = str(new)
-                        creds.update_points(username,new)
+                        glove.update_points(username, new)
                     except:
                         print("Error in adding tickets")
                     else:
-                        points = creds.getpointamnt(username)
+                        points = glove.getpointamnt(username)
                         print("Successfully added points.")
                         print("New balance: ", points)
 
@@ -173,11 +196,12 @@ def application(username, password):
                 print("\n<<Signout>>")
                 print("Are you sure you want to signout?(y/n): ")
                 ui = input(": ")
-                if ui == 'y' or "yes":
-                    creds.signOut(username, password)
-                    if not creds.loggedIN:
+                if ui == 'y' or ui == "yes":
+                    glove.signOut(username, password)
+                    if not glove.loggedIN:
                         print("\nSignout successful")
                         main()
+                        break
                 else:
                     print("Signout cancelled")
 
