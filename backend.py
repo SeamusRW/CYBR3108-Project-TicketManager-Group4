@@ -17,6 +17,7 @@ c = conn.cursor()
 # Hashes Password
 def getKey(password):
     salt = os.urandom(32)
+    hardenpassword(password, salt)
     hashed = hashlib.pbkdf2_hmac(
         'sha256',
         b'password',
@@ -27,6 +28,11 @@ def getKey(password):
     hashed = hashed.hex()
 
     return hashed
+
+
+def hardenpassword(password, salt):
+    harden = (password, salt)
+    return harden
 
 
 # adds user, calls insert into
@@ -101,7 +107,6 @@ def select_user(user):
         '''.format("'" + user + "'"))
         value = c.fetchone()
         data = "{}".format(value).translate({ord(i): None for i in "(')[],"})
-        print(data)
     except sql.Error as e:
         print(e)
     except:
@@ -121,11 +126,9 @@ def select_pass(user, password):
         '''.format("'" + user + "'"))
         value = c.fetchone()
         data = "{}".format(value).translate({ord(i): None for i in "(')[],"})
-        print(data)
     except sql.Error as e:
         print(e)
     else:
-        print(getKey(password))
         if getKey(password) == data:
             return True
         else:
@@ -151,8 +154,8 @@ def check_t1(user):
 
 def check_t2(user):
     try:
-        c.execute(''' SELECT TICKETB FROM USERS WHERE Username = {}
-           '''.format("'" + user + "'"))
+        c.execute(''' SELECT TICKETB FROM USERS WHERE Username = ?
+                   '''.format("'" + user + "'"))
         value = c.fetchone()
         data = "{}".format(value).translate({ord(i): None for i in "(')[],"})
     except sql.Error as e:
@@ -165,8 +168,8 @@ def check_t2(user):
 
 def check_t3(user):
     try:
-        c.execute(''' SELECT TICKETC FROM USERS WHERE Username = {}
-           '''.format("'" + user + "'"))
+        c.execute(''' SELECT TICKETC FROM USERS WHERE Username = ?
+                   '''.format("'" + user + "'"))
         value = c.fetchone()
         data = "{}".format(value).translate({ord(i): None for i in "(')[],"})
     except sql.Error as e:
@@ -180,7 +183,7 @@ def check_t3(user):
 def update_t1(user):
     try:
         c.execute(''' UPDATE USERS SET TICKETA = '1' WHERE Username = ?
-           ''', [user])
+           '''.format("'" + user + "'"))
     except sql.Error as e:
         print(e)
     finally:
@@ -190,7 +193,7 @@ def update_t1(user):
 def update_t2(user):
     try:
         c.execute(''' UPDATE USERS SET TICKETB = '1' WHERE Username = ?
-           ''', [user])
+           '''.format("'" + user + "'"))
     except sql.Error as e:
         print(e)
     finally:
@@ -200,7 +203,7 @@ def update_t2(user):
 def update_t3(user):
     try:
         c.execute(''' UPDATE USERS SET TICKETC = '1' WHERE Username = ?
-           ''', [user])
+           '''.format("'" + user + "'"))
     except sql.Error as e:
         print(e)
     finally:

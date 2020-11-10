@@ -70,11 +70,13 @@ def update_tickets(user, mode):
 
 
 def get_tickets(user, mode):
-    if mode == 1:
-        data = check_t1(user)
-    if mode == 2:
-        data = check_t2(user)
-    if mode == 3:
-        data=check_t3(user)
+    thing = ""
 
-    return data
+    if mode == 1:
+        thing = check_t1(user)
+    if mode == 2:
+        thing = check_t2(user)
+    if mode == 3:
+        thing = check_t3(user)
+
+    return thing

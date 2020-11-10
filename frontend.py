@@ -82,7 +82,7 @@ def main():
 
 def application(username, password):
     ui = ""
-    tickets = [["Metallica", 20], ["Lady Gaga", 20], ["Keith Urban", 20]]
+    tickets = [["Metallica", 250], ["Lady Gaga", 250], ["Keith Urban", 250]]
     if glove.loggedIN:
         points = glove.getpointamnt(username)
         print('''
@@ -98,6 +98,7 @@ def application(username, password):
                 while ui != "b" or "B":
                     print("<<Buy Tickets>>")
                     print("Points: ", points)
+                    print("NOTE: Users may only have one of each ticket due to current COVID guidelines\n NO REFUNDS!!")
                     print("Available tickets: \n")
                     for ticket in tickets:
                         print("{}".format(ticket).translate({ord(i): None for i in "(')[]"}))
@@ -114,7 +115,7 @@ def application(username, password):
 
                                 current = glove.getpointamnt(username)
                                 current = int(current)
-                                new = current - 20
+                                new = current - 250
                                 glove.update_points(username, str(new))
                                 points = glove.getpointamnt(username)
 
@@ -132,7 +133,7 @@ def application(username, password):
 
                                 current = glove.getpointamnt(username)
                                 current = int(current)
-                                new = current - 20
+                                new = current - 250
                                 glove.update_points(username, str(new))
                                 points = glove.getpointamnt(username)
 
@@ -150,7 +151,7 @@ def application(username, password):
 
                                 current = glove.getpointamnt(username)
                                 current = int(current)
-                                new = current - 20
+                                new = current - 250
                                 glove.update_points(username, str(new))
                                 points = glove.getpointamnt(username)
 
@@ -242,47 +243,47 @@ def intro():
 
     while True:
         print("\rW    ", end="")
-        t.sleep(0.2)
+        t.sleep(0.21)
         print("\rWe   ", end="")
-        t.sleep(0.20)
+        t.sleep(0.21)
         print("\rWel  ", end="")
-        t.sleep(0.20)
+        t.sleep(0.21)
         print("\rWelc ", end="")
-        t.sleep(0.20)
+        t.sleep(0.21)
         print("\rWelco", end="")
-        t.sleep(0.20)
+        t.sleep(0.21)
         print("\rWelcom", end="")
-        t.sleep(0.20)
+        t.sleep(0.21)
         print("\rWelcome ", end="")
-        t.sleep(0.2)
+        t.sleep(0.21)
         print("\rWelcome t", end="")
-        t.sleep(0.20)
+        t.sleep(0.21)
         print("\rWelcome to", end="")
-        t.sleep(0.20)
+        t.sleep(0.21)
         print("\rWelcome to T", end="")
-        t.sleep(0.20)
+        t.sleep(0.21)
         print("\rWelcome to Ti", end="")
-        t.sleep(0.20)
+        t.sleep(0.21)
         print("\rWelcome to Tic", end="")
-        t.sleep(0.20)
+        t.sleep(0.21)
         print("\rWelcome to Tick", end="")
-        t.sleep(0.20)
+        t.sleep(0.21)
         print("\rWelcome to Ticke", end="")
-        t.sleep(0.20)
+        t.sleep(0.21)
         print("\rWelcome to Ticket", end="")
-        t.sleep(0.20)
+        t.sleep(0.21)
         print("\rWelcome to Ticket M", end="")
-        t.sleep(0.20)
+        t.sleep(0.21)
         print("\rWelcome to Ticket Ma", end="")
-        t.sleep(0.20)
+        t.sleep(0.21)
         print("\rWelcome to Ticket Man", end="")
-        t.sleep(0.20)
+        t.sleep(0.21)
         print("\rWelcome to Ticket Mana", end="")
-        t.sleep(0.20)
+        t.sleep(0.21)
         print("\rWelcome to Ticket Manag", end="")
-        t.sleep(0.20)
+        t.sleep(0.21)
         print("\rWelcome to Ticket Manage", end="")
-        t.sleep(0.20)
+        t.sleep(0.21)
         print("\rWelcome to Ticket Manager", end="")
         break
 
